@@ -15,7 +15,9 @@ function(x, y){
 	# Hellingers Distance:
 	# ---------------------
 	H <- sqrt(sum((sqrt(x) - sqrt(y))^2, na.rm = TRUE))
-	I <- 1 - 0.5 * H
+	# I <- 1 - 0.5 * H -> error in Warren, Glor and Turelli 
+	# (2008, Evolution 62:2868-2883)
+	I <- 1 - H^2 * 0.5 # <- corrected I
 		
 	c(D = D, I = I)	
 }

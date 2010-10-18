@@ -1,0 +1,48 @@
+		CHANGES IN PHYLOCLIM VERSION 0.6
+      
+BUG FIXES
+
+    o There was mistake in the formala for the calculation of 
+      Hellingers distance in the original publication of Warren,
+      Glor and Turelli (2008, Evolution 62:2868-2883; see also
+      http://enmtools.blogspot.com/2010/09/error-in-i-metric-but-
+      dont-panic.html). The corrected formula is now implemented
+      in getDI. As stressed by Dan Warren the error is only a
+      scaling issue and does not affect the p-values of the tests 
+      based upon it. (thanks to Pascal Title for bug report)
+		
+		
+		CHANGES IN PHYLOCLIM VERSION 0.5
+      
+      
+BUG FIXES
+
+    o Function bg.similarity.test was mislead by different 
+      choices of column names in the SWD files, e.g. "species" 
+      instead of "spec". The function can now handle any column 
+      name. (thanks to Pascal Title for bug report)
+
+
+		CHANGES IN PHYLOCLIM VERSION 0.4
+
+
+NEW FEATURES
+
+    o The functions niche.equivalency.test and bg.similarity.test have
+      a new argument mx, which controls the number of memory that is given
+      to JAVA during the calls to MAXENT.
+      
+BUG FIXES
+
+    o The functions niche.equivalency.test and bg.similarity.test were
+      not fully Window compatible. (thanks to Alastirs Potts for the fix)
+
+
+		CHANGES IN PHYLOCLIM VERSION 0.3
+
+
+NEW FEATURES
+
+    o The function plotPNO has now an argument legend.pos to control
+      the position of the legend. Alternatively, the plotting of
+      the legend can now be suppressed.

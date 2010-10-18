@@ -1,4 +1,4 @@
-niche.equivalency.test <- function(spec, n, maxent){
+niche.equivalency.test <- function(spec, n, maxent, mx = 2000){
 	
 	# read samples file:
 	z <- read.csv(maxent$samples)
@@ -20,22 +20,31 @@ niche.equivalency.test <- function(spec, n, maxent){
 	
 	# save input files:
 	# -----------------
-	dir.create("R")
-	dir.create("R/out")
+	if (file.exists("R.phyloclim.temp"))
+	    unlink("R.phyloclim.temp", recursive = TRUE)
+	dir.create("R.phyloclim.temp")
+	dir.create("R.phyloclim.temp/out")
 	
-	write.table(bg, "R/background.csv", row.names = FALSE, 		col.names = TRUE, sep = ",")
-	write.table(rbind(z, zzz), "R/samples.csv", row.names = 		FALSE, col.names = TRUE, sep = ",")
+	write.table(bg, "R.phyloclim.temp/background.csv", 
+	    row.names = FALSE, col.names = TRUE, sep = ",")
+	write.table(rbind(z, zzz), "R.phyloclim.temp/samples.csv",
+	    row.names = FALSE, col.names = TRUE, sep = ",")
 	
 	# call MAXENT:
 	# ------------
-	call <- paste("java -mx2000m -jar", maxent$app , 		"-e R/background.csv -s R/samples.csv -j", 		maxent$projection, "-o R/out", 				"-r -u nopictures outputformat=raw -a")
-	
+	mx <- paste("-mx", mx, "m", sep = "")
+	call <- paste("java", mx, "-jar", maxent$app , 		"-e R.phyloclim.temp/background.csv",
+		"-s R.phyloclim.temp/samples.csv", 
+		"-j", maxent$projection, 
+		"-o R.phyloclim.temp/out", 			
+		"-r removeduplicates nopictures", 
+	    "outputformat=raw autorun")
 	system(call, wait = TRUE)
 	
 	# analyse output
 	# --------------
 	rwd <- getwd()
-	setwd("R/out")
+	setwd("R.phyloclim.temp/out")
 	
 	projname <- gsub("^.+/", "", maxent$projection)
 	projname <- paste(projname, "asc", sep = ".")
@@ -71,7 +80,7 @@ niche.equivalency.test <- function(spec, n, maxent){
 	# change wd and remove MAXENT output:
 	# ----------------------------------
 	setwd(rwd)
-	system("rm -r R")
+	unlink("R.phyloclim.temp", recursive = TRUE)
 	
 	# create output object:
 	# ---------------------

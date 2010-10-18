@@ -1,4 +1,5 @@
-niche.overlap <- function(x){
+niche.overlap <- 
+function(x){
 	
 	# CASE 1: x is a pno matrix
 	# -------------------------
@@ -24,9 +25,9 @@ niche.overlap <- function(x){
 		rownames(DI) <- names(x)
 		colnames(DI) <- names(x)
 		for (i in 1:(nspec - 1)){
-			X <- import.asc(ENM[i], type = "numeric")
+			X <- import.asc(x[i], type = "numeric")
 			for (j in (i + 1):nspec){
-				Y <- import.asc(ENM[j], type = "numeric")
+				Y <- import.asc(x[j], type = "numeric")
 				dhi <- getDI(X, Y)
 				DI[i, j] <- dhi[1]
 				DI[j, i] <- dhi[2]

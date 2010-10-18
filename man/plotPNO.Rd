@@ -12,7 +12,7 @@ This function can be used to plot predicted niche occupancy profiles (PNOs). PNO
 
 \usage{
 plotPNO(x, subset = NULL, thinning = NULL, xlab = NULL, 
-	tail_threshold = 0, wm = FALSE)
+	tail_threshold = 0, wm = FALSE, legend.pos = "topleft")
 }
 
 \arguments{
@@ -27,6 +27,7 @@ plotPNO(x, subset = NULL, thinning = NULL, xlab = NULL,
   \item{tail_threshold}{A numeric that can be used cut long tails of PNOs; defaults to \code{0}.}
   
   \item{wm}{A logical indicating if weighted mean should added for each species.}
+  \item{legend.pos}{Controls the position of the legend. Might eihter be a list object containing x and y coordinates (such as e.g. returned by \code{\link{locator}}) of the \bold{topleft corner} of the legend box or one of the following: \code{"topleft"} (default), \code{"bottomleft"}, \code{"topright"}, or \code{"bottomright"}. If \code{legend.pos == NULL} the plotting of the legend is suppressed.}
 }
 
 \references{
@@ -35,9 +36,7 @@ and diversification of the 'bird-cage evening primroses' (\emph{Oenothera}, sect
 \emph{Kleinia}). \emph{Am. Nat.} \bold{173}: 225-240.
 }
 
-\author{
-Christoph Heibl (\email{heibl@lmu.de})
-}
+\author{Christoph Heibl}
 
 \seealso{
 \code{\link{pno}}

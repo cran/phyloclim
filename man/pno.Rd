@@ -3,7 +3,7 @@
 \alias{pno}
 
 \title{
-Predicted niche occupancy profiles
+Predicted Niche Occupancy Profiles
 }
 
 \description{
@@ -39,7 +39,7 @@ and diversification of the 'bird-cage evening primroses' (\emph{Oenothera}, sect
 }
 
 \author{
-Christoph Heibl (\email{heibl@lmu.de})
+Christoph Heibl)
 }
 
 \seealso{

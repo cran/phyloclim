@@ -1,5 +1,6 @@
-`descendants` <-
-function(tree, node, internal = FALSE){
+descendants <-
+function(tree, node, internal = FALSE, string = FALSE){
+	
 	tips <- seq(along = tree$tip.label)
 	x <- tree$edge[,2][tree$edge[,1] == node]
 	repeat{
@@ -12,5 +13,7 @@ function(tree, node, internal = FALSE){
 	if (length(x) == 0) x <- node
 	if (!internal)
 		x <- x[x %in% tips]
+	if (string)
+		x <- tree$tip.label[x]
 	x
 }

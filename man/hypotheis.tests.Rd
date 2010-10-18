@@ -6,13 +6,13 @@
 \title{Niche equivalency and background similarity test}
 
 \description{
-Hypothesis testing as proposed by Warren et al. (2008) based on the generation of pseudoreplicate datasets. The niche equivaleny (or identity) test asks whether the ecological niche models (ENMs) of two are more different than expected if they are drawn from the same underlying distribution. The background similarity test asks whether ENMs drawn from populations with partially or entirely non-overlapping distributions are any more different from one another than expected by random chance. 
+Hypothesis testing as proposed by Warren et al. (2008) based on the generation of pseudoreplicate datasets. The niche equivaleny (or identity) test asks whether the ecological niche models (ENMs) of two species are more different than expected if they are drawn from the same underlying distribution. The background similarity test asks whether ENMs drawn from populations with partially or entirely non-overlapping distributions are any more different from one another than expected by random chance. 
 }
 
 \usage{
-niche.equivalency.test(spec, n, maxent)
+niche.equivalency.test(spec, n, maxent, mx = 2000)
 
-bg.similarity.test(spec, n, maxent)
+bg.similarity.test(spec, n, maxent, mx = 2000)
 }
 
 \arguments{
@@ -21,6 +21,8 @@ bg.similarity.test(spec, n, maxent)
   \item{n}{An integer given the number of permutations of the original data.}
   
   \item{maxent}{A list containing the location of the MAXENT application and its input files (see details).}
+  
+  \item{mx}{An integer giving the number of megabytes of memory made available to JAVA.}
 }
 
 \details{
@@ -55,6 +57,6 @@ Warren, D., R.E. Glor, & M. Turelli. 2008. Environmental niche equivalency versu
 Christoph Heibl (\email{heibl@lmu.de})
 }
 
-\note{These functions have been developed and tested with MAXENT version 3.3.1.}
+\note{These functions have been developed with MAXENT version 3.3.1. and subsequently updated to work with versions 3.3.2 and 3.3.3}
 
 \seealso{\code{\link{niche.overlap}}}

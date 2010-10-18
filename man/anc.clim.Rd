@@ -3,7 +3,7 @@
 \alias{anc.clim}
 
 \title{
-Estimation of ancestral climatic tolerances
+Estimation of Ancestral Climatic Tolerances
 }
 
 \description{
@@ -47,7 +47,7 @@ and diversification of the 'bird-cage evening primroses' (\emph{Oenothera}, sect
 }
 
 \author{
-Christoph Heibl (\email{heibl@lmu.de})
+Christoph Heibl)
 }
 
 \seealso{

@@ -3,7 +3,7 @@
 \alias{niche.overlap}
 
 \title{
-Quantification of niche overlap
+Quantification of Niche Overlap
 }
 
 \description{
@@ -35,7 +35,7 @@ Warren, D. L., R. E. Glor, & M. Turelli. 2008. Environmental niche equivalency v
 }
 
 \author{
-Christoph Heibl (\email{heibl@lmu.de})
+Christoph Heibl)
 }
 
 \seealso{\code{\link{pno}}, 
