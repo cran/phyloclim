@@ -31,12 +31,10 @@ Schoener, T.W. 1968. Anolis lizards in Bimini: resource partitioning in a comple
 
 Van der Vaart, A.W. 1998. Asymptotic statistics. Cambridge University Press, U.K.
 
-Warren, D. L., R. E. Glor, & M. Turelli. 2008. Environmental niche equivalency versus conservatism: quantitative approaches to niche evolution. \emph{Evolution}. \bold{62}: 2868-2883.
+Warren, D. L., R. E. Glor, & M. Turelli. 2008. Environmental niche equivalency versus conservatism: quantitative approaches to niche evolution. \emph{Evolution} \bold{62}: 2868-2883.
 }
 
-\author{
-Christoph Heibl)
-}
+\author{Christoph Heibl}
 
 \seealso{\code{\link{pno}}, 
 \code{\link{niche.equivalency.test}}, 

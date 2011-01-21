@@ -29,12 +29,10 @@ A vector of weighted means corresponding to the columns in \code{x}.
 \references{
 Evans, M. E. K., S. A. Smith, R. S. Flynn, and M. J. Donoghue. 2009. Climate, niche evolution,
 and diversification of the 'bird-cage evening primroses' (\emph{Oenothera}, sections \emph{Anogra} and 
-\emph{Kleinia}). \emph{Am. Nat.} \bold{173}: 225-240.
+\emph{Kleinia}) \emph{Am. Nat.} \bold{173}: 225-240.
 }
 
-\author{
-Christoph Heibl (heibl at lmu dot de)
-}
+\author{Christoph Heibl}
 
 \seealso{
 \code{\link{pno}}, 

@@ -6,7 +6,7 @@ function(x, subset = NULL, normalize = TRUE){
 	# subset matrix
 	# ---------------------
 	if (!is.null(subset))
-		x <- x[, c(1, which(names(x) %in% sset))]
+		x <- x[, c(1, which(names(x) %in% subset))]
 		
 	nb <- dim(x)[2]
 	wm <- vector(length = (nb - 1))

@@ -53,9 +53,7 @@ Phillips, S.J, M. Dudik, & R.E. Schapire. 2006. Maximum entropy modeling of spec
 Warren, D., R.E. Glor, & M. Turelli. 2008. Environmental niche equivalency versus conservatism: quantitative approaches to niche evolution. \emph{Evolution}. \bold{62}: 2868-2883.
 }
 
-\author{
-Christoph Heibl (\email{heibl@lmu.de})
-}
+\author{Christoph Heibl}
 
 \note{These functions have been developed with MAXENT version 3.3.1. and subsequently updated to work with versions 3.3.2 and 3.3.3}
 

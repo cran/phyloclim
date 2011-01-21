@@ -1,5 +1,17 @@
-		CHANGES IN PHYLOCLIM VERSION 0.6
+		CHANGES IN PHYLOCLIM VERSION 0.8
       
+BUG FIXES
+
+    o The formula of Fitzpatrick and Turelli (2006) was incorrectly 
+      implemented in the function age.range.correlation. First, it 
+      used 'n' (instead of n - 1) to weight the overlap statistic 'o'. 
+      Second, the function was not summing 'o' correctly over all 
+      species in both clades. (thanks to Pedro Abell‡n and 
+      Ben Fitzpatrick for bug report and suggestions for a fix)
+	
+
+		CHANGES IN PHYLOCLIM VERSION 0.6
+
 BUG FIXES
 
     o There was mistake in the formala for the calculation of 
@@ -14,7 +26,6 @@ BUG FIXES
 		
 		CHANGES IN PHYLOCLIM VERSION 0.5
       
-      
 BUG FIXES
 
     o Function bg.similarity.test was mislead by different 
@@ -24,7 +35,6 @@ BUG FIXES
 
 
 		CHANGES IN PHYLOCLIM VERSION 0.4
-
 
 NEW FEATURES
 
@@ -39,7 +49,6 @@ BUG FIXES
 
 
 		CHANGES IN PHYLOCLIM VERSION 0.3
-
 
 NEW FEATURES
 

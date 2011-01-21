@@ -7,4 +7,3 @@ descendants
 \description{
 This is an internal function not be called by the user.
 }
-

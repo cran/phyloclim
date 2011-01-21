@@ -23,9 +23,7 @@ plotBackgroundSimilarity(x)
 }
 }
 
-\author{
-Christoph Heibl (\email{heibl@lmu.de})
-}
+\author{Christoph Heibl}
 
 \seealso{
 \code{\link{niche.equivalency.test}}, 

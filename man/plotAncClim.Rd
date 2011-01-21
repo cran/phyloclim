@@ -39,9 +39,7 @@ and diversification of the 'bird-cage evening primroses' (\emph{Oenothera}, sect
 \emph{Kleinia}). \emph{Am. Nat.} \bold{173}: 225-240.
 }
 
-\author{
-Christoph Heibl (\email{heibl@lmu.de})
-}
+\author{Christoph Heibl}
 
 \seealso{
 \code{\link{pno}}, \code{\link{pno.weighted.mean}}, \code{\link{anc.clim}}

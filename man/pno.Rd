@@ -28,6 +28,19 @@ pno(path_bioclim, path_model, subset = NULL,
   \item{bin_number}{An integer, giving the number of bins used.}
 }
 
+\details{
+	The path arguments \code{path_bioclim} and \code{path_model} point to the directories where the environmental data and the MAXENT probability distributions must be stored as ASCII maps with an \bold{ArcGIS-compatible} header (as obtained with MAXENT output filetype: \bold{asc}). An example header:
+	
+\tabular{rll}{
+    \tab ncols         \tab 958 \cr
+	\tab nrows         \tab 376 \cr
+	\tab xllcorner     \tab -73.440304 \cr
+	\tab yllcorner     \tab -55.27622 \cr
+	\tab cellsize      \tab 0.0166 \cr
+	\tab NODATA_value  \tab -9999 \cr
+	}
+}
+
 \value{
 A data frame of cumulative probalities of suitability for each value on an environmental gradient (rows) for the a set of studied taxa (rows). The first column gives the mean of each category.
 }
@@ -38,9 +51,7 @@ and diversification of the 'bird-cage evening primroses' (\emph{Oenothera}, sect
 \emph{Kleinia}). \emph{Am. Nat.} \bold{173}: 225-240.
 }
 
-\author{
-Christoph Heibl)
-}
+\author{Christoph Heibl}
 
 \seealso{
 \code{\link{pno.weighted.mean}}, 

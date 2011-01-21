@@ -10,8 +10,8 @@ This package implements some recently developed methods in phyloclimatic modelin
 \tabular{ll}{
  Package: \tab phyloclim\cr
  Type: \tab Package\cr
- Version: \tab 0.5\cr.NA\cr
- Date: \tab 2010-10-18\cr
+ Version: \tab 0.8.1\cr
+ Date: \tab 2011-01-21\cr
  License: \tab GPL (>= 2)\cr
 }
 \code{phyloclim} is intended to provide methods for the quantification of niche occupancy and niche overlap and combine this data with phylogenetic trees. 
@@ -20,7 +20,7 @@ Phylogenetic data can be integrated into comparative methods such as \code{\link
 The functions in \code{phyloclim} are in an early stage of development, so they should be used with care! Any feedback is welcome!
 }
 \author{
-Maintainer: Christoph Heibl \email{heibl@lmu.de}
+Maintainer: Christoph Heibl \email{christoph.heibl@gmx.net}
 }
 \keyword{package}
 \seealso{

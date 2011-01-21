@@ -7,7 +7,7 @@ plotPNO <- function(x, subset = NULL, thinning = NULL, xlab = NULL, tail_thresho
 	# subset matrix
 	# ---------------------
 	if (!is.null(subset))
-		x <- x[, c(1, which(names(x) %in% sset))]
+		x <- x[, c(1, which(names(x) %in% subset))]
 		
 	for (i in 2:(dim(x)[2])){
 		nf <- sum(x[, i])

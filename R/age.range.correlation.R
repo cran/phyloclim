@@ -1,17 +1,30 @@
-age.range.correlation <- function(phy, overlap, tri = "upper", n = 1000){
+age.range.correlation <- 
+function(phy, overlap, tri = "upper", n = 1000){
+	
+	# check input
+	# -----------
+	if (!inherits(phy, "phylo")) 
+        stop("object \"phy\" is not of class \"phylo\"")
 			
 	# ages:
 	# -----
 	age <- branching.times(phy)	
 	
+	# make matrix symmetrical
+	# -----------------------
 	ovlap <- overlap
 	if (tri == "upper")
 		ovlap[lower.tri(ovlap)] <- t(ovlap)[lower.tri(ovlap)]
 	if (tri == "lower")
 		ovlap[upper.tri(ovlap)] <- t(ovlap)[upper.tri(ovlap)]
-		
+	
+	# match matrix to tree
+	# --------------------
 	id <- match(phy$tip.label, rownames(ovlap))
 	ovlap <- ovlap[id, id]
+	
+	# calculate 'nested mean overlap'
+	# -------------------------------
 	overlap <- sapply(names(age), nested.mean.overlap, phy = phy, 		olap = ovlap)
 
 	x <- cbind(age, overlap)	
