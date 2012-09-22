@@ -1,113 +1,129 @@
-bg.similarity.test <- function(spec, n, maxent, mx = 2000){
+bg.similarity.test <- function(p, env, n = 99, app, dir){
 	
-	# read samples file:
-	z <- read.csv(maxent$samples)
-	if (length(unique(z[, 1])) == 2)
-		spec <- unique(z[, 1])
-	z <- z[z[, 1] %in% spec, ]
+  # checks and definitions
+  # ----------------------
+  layer.names <- layerNames(env)
+  species <- sort(unique(levels(p[, 1])[p[, 1]]))
 	
-	# read background file:
-	bg <- read.csv(maxent$background)
+  ## sample background points from env
+  ## ---------------------------------
+  bg <- sampleRandom(env, size = 9999, na.rm = TRUE, sp = TRUE)
+  bg <- data.frame("background", coordinates(bg), slot(bg, "data"))
+  
+  # append covariate data to presence points
+  # ----------------------------------------
+  attributes <- extract(x = env, y = SpatialPoints(p[, 2:3]))
+  p <- data.frame(p, attributes)
+  NAs <- which(is.na(p), arr.ind = TRUE)
+  NAs <- unique(NAs[, 1])
+  if (length(NAs) > 0){
+    p <- p[-NAs, ]
+    warning(length(NAs), " presence points with missing environmental data removed")
+  }
+  
+  ## sample n(spec1) and n(spec2) points from background
+  ## ---------------------------------------------------
+  nb.occ <- table(p[, 1])[species] # corresponds to 'o' (p.2872)
+  spec.vect <- sort(as.character(levels(p[, 1])[p[, 1]]))
+  random.presence <- function(i, x, nbo, p, name){
+    name <- paste(name, i, sep = "_")
+    s <- rbind(sampleRandom(x, size = nbo[1], na.rm = TRUE, sp = TRUE),
+               sampleRandom(x, size = nbo[2], na.rm = TRUE, sp = TRUE))
+    s <- data.frame(name, coordinates(s), slot(s, "data"))
+    colnames(s)[1:3] <- c("spec", "long", "lat")
+    return(s)
+  }
+  rp <- lapply(1:n, FUN = random.presence, x = env, nbo = nb.occ, name = spec.vect)
+  rp <- do.call(rbind, rp)
 	
-	# datapoints per species
-	# ----------------------
-	o <- table(z[, 1])
-	o <- o[o > 0]
-	o <- o[match(spec, names(o))]
+  # save input files:
+  # -----------------
+  if (missing(dir)) {
+    DIR <- "R.phyloclim.temp"
+  }
+  else {
+    DIR <- dir
+  }
+  if (file.exists(DIR))
+    unlink(DIR, recursive = TRUE)
+  dir.create(DIR)
+  dir.create(ODIR <- paste(DIR, "out/", sep = "/"))
+  dir.create(PDIR <- paste(DIR, "proj/", sep = "/"))
+  
+  write.table(bg, paste(DIR, "background.csv", sep = "/"), 
+              row.names = FALSE, col.names = TRUE, sep = ",")
+  write.table(rbind(p, rp), paste(DIR, "samples.csv", sep = "/"),
+              row.names = FALSE, col.names = TRUE, sep = ",")
+  fn <- paste(PDIR, layer.names, ".asc", sep = "")
+  env <- unstack(env)
+  for (i in seq_along(fn)){
+    writeRaster(x = env[[i]], filename = fn[i], format = "ascii", 
+                overwrite = TRUE, NAflag = -9999)
+  }
 	
-	# random samples from background
-	# ------------------------------
-	rb <- NULL
-	for (i in 1:n){
-		# first species
-		id <- sample(seq(along = bg[, 1]), o[1])
-		bg_temp <- bg[id, ]
-		bg_temp[, 1] <- paste(names(o[1]), i, sep = "_")
-		rb <- rbind(rb, bg_temp)
-		# second species
-		id <- sample(seq(along = bg[, 1]), o[2])
-		bg_temp <- bg[id, ]
-		bg_temp[, 1] <- paste(names(o[2]), i, sep = "_")
-		rb <- rbind(rb, bg_temp)
-	}
-	testnames <- unique(rb[, 1])
+  # call MAXENT:
+  # ------------
+  CALL <- paste("java -jar", app ,   	
+                "-e ", paste(DIR, "background.csv", sep = "/"),
+                "-s ", paste(DIR, "samples.csv", sep = "/"),
+                "-j ", PDIR, 
+                "-o ", ODIR, 			
+                "-r removeduplicates nopictures", 
+                "outputformat=raw autorun")
+  system(CALL, wait = TRUE)
 	
-	# save input files:
-	# -----------------
-	if (file.exists("R.phyloclim.temp"))
-	    unlink("R.phyloclim.temp", recursive = TRUE)
-	dir.create("R.phyloclim.temp")
-	dir.create("R.phyloclim.temp/out")
-	
-	write.table(bg, "R.phyloclim.temp/background.csv", 
-	    row.names = FALSE, col.names = TRUE, sep = ",")
-	write.table(rbind(z, rb), 
-	    "R.phyloclim.temp/samples.csv", row.names = FALSE, 
-	    col.names = TRUE, sep = ",")
-	
-	# call MAXENT:
-	# ------------
-	mx <- paste("-mx", mx, "m", sep = "")
-	call <- paste("java", mx, "-jar", maxent$app , 		"-e R.phyloclim.temp/background.csv",
-		"-s R.phyloclim.temp/samples.csv", 
-		"-j", maxent$projection, 
-		"-o R.phyloclim.temp/out", 			
-		"-r removeduplicates nopictures", 
-	    "outputformat=raw autorun")
-	system(call, wait = TRUE)
-	
-	# analyse output
-	# --------------
-	rwd <- getwd()
-	setwd("R.phyloclim.temp/out")
-	
-	projname <- gsub("^.+/", "", maxent$projection)
-	projname <- paste(projname, "asc", sep = ".")
-	
-	# original models:
-	# ----------------
-	fn <- paste(spec[1], projname, sep = "_")
-	xorig <- import.asc(fn, type = "numeric")
-	fn <- paste(spec[2], projname, sep = "_")
-	yorig <- import.asc(fn, type = "numeric")
-	
-	di <- getDI(xorig, yorig)
-	
-	# null models:
-	# ----------------
-	nd <- NULL
-	for (i in 1:n){
-		fn <- paste(spec[1], i, projname, sep = "_")
-		x <- import.asc(fn, type = "numeric")
-		fn <- paste(spec[2], i, projname, sep = "_")
-		y <- import.asc(fn, type = "numeric")
-		nd <- rbind(nd, c(getDI(xorig, y), getDI(yorig, x)))
-	}
-	
-	# assess significance:
-	# --------------------
-	m <- colMeans(nd)
-	s <- apply(nd, 2, sd)
-	di <- rep(di, 2)
-	less.sim <- di < m
-	
-	p.D.xBacky <- pnorm(di[1], m[1], s[1], less.sim[1])
-	p.D.yBackx <- pnorm(di[3], m[3], s[3], less.sim[3])
-	p.I.xBacky <- pnorm(di[2], m[2], s[2], less.sim[2])
-	p.I.yBackx <- pnorm(di[4], m[4], s[4], less.sim[4])
-	
-	# change wd and remove MAXENT output:
-	# ----------------------------------
-	setwd(rwd)
-	unlink("R.phyloclim.temp", recursive = TRUE)
+  # calculate D and I for actual models
+  # -----------------------------------
+  fns <- paste(ODIR, species, "_proj.asc", sep = "")
+  x <- read.asciigrid(fns[1])
+  y <- read.asciigrid(fns[2])
+  di <- di.enm(x = x, y = y)
+  
+  # calculate D and I for null distributions 
+  # ----------------------------------------
+  di.x.randomY <- sapply(X = 1:n, FUN = di.enm, x = x, y = fns[2])
+  di.x.randomY <- t(di.x.randomY)
+  di.y.randomX <- sapply(X = 1:n, FUN = di.enm, x = fns[1], y = y)
+  di.y.randomX <- t(di.y.randomX)
+  
+  # 95% CIs for null distributions
+  # ------------------------------
+	m.x.randomY <- apply(di.x.randomY, 2, mean)
+	sd.x.randomY <- apply(di.x.randomY, 2, sd)
+	m.y.randomX <- apply(di.y.randomX, 2, mean)
+	sd.y.randomX <- apply(di.y.randomX, 2, sd)
+  ci.x.randomY <- rbind(lower.bound = 1.96 * ( sd.x.randomY / sqrt(n) ) - m.x.randomY, 
+                        upper.bound = 1.96 * ( sd.x.randomY / sqrt(n) ) + m.x.randomY)                    
+  ci.y.randomX <- rbind(lower.bound = 1.96 * ( sd.y.randomX / sqrt(n) ) - m.y.randomX, 
+                        upper.bound = 1.96 * ( sd.y.randomX / sqrt(n) ) + m.y.randomX)
+  
+  h0.x.randomY <- ci.x.randomY[1, ] < di & di < ci.x.randomY[2, ]
+  h0.y.randomX <- ci.y.randomX[1, ] < di & di < ci.y.randomX[2, ]
+  
+  # null hypothesis that measured niche overlap between species is 
+  # explained by regional similarities or differences in 
+  # available habitat, is rejected if the actual similarity
+  # between two species falls outside of the 95% confidence limits 
+  # of the null distribution.
+
+  # remove MAXENT output:
+  # ---------------------
+  if (DIR == "R.phyloclim.temp") unlink(DIR, recursive = TRUE)
 	
 	# create output object:
 	# ---------------------
-	list(
-		test = "background.similarity",
-		spec = spec,
-		D = c(di[1], p.X_backY = p.D.xBacky, 				p.Y_backX = p.D.yBackx), 
-		I = c(di[2], p.X_backY = p.I.xBacky, 				p.Y_backX = p.I.yBackx),
-		null.distribution = nd
-	)	
+  out <- list(
+    method = "background similarity test",
+    species = species,
+    null = paste("niche models are less or equally similar\n", 
+                 paste(rep("\t", 24), collapse = ""), 
+                 "than expected by chance", sep = ""),
+    statistic = di,
+    ci.x.randomY = ci.x.randomY,
+    ci.y.randomX = ci.y.randomX,
+    nd.x.randomY = di.x.randomY,
+    nd.y.randomX = di.y.randomX
+    )
+  class(out) <- "ntest"
+  out
 }

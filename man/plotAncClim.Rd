@@ -2,13 +2,13 @@
 \Rdversion{1.1}
 \alias{plotAncClim}
 
-\title{Chronograms with climatic data on the y-axis}
+\title{Chronograms with Climatic Data on the Y-Axis}
 
 \description{This function can be used to plot the history of climatic tolerance for a clade \emph{sensu} Evans et al. (2009).}
 
 \usage{
-plotAncClim(x, clades = NULL, col, density = TRUE, lwd = 1,
-	xspace = c(0, 0.1), ylab = "")
+plotAncClim(x, clades = NULL, col, density = TRUE, tipmode = 1,
+    nchar = 3, cex, tipspace, cladespace = 1, lwd, ylab = "")
 }
 
 \arguments{
@@ -16,13 +16,21 @@ plotAncClim(x, clades = NULL, col, density = TRUE, lwd = 1,
   
   \item{clades}{A list containing vectors of tip labels which define  the clades to highlight.}
   
-  \item{col}{A vector containing colors for different clades.}
+  \item{col}{A vector containing colors for different clades (see Examples).}
   
   \item{density}{Logical, if \code{TRUE}, the central density intervals for recent species are plotted.}
   
-  \item{lwd}{The line width, a positive number, defaulting to 1.}
+  \item{tipmode}{Integer: \code{tipmode = 0} means no tiplabels (and no central density intervals) are plotted; values \code{1}, \code{2}, and \code{3} define different ways of plotting the tiplabels (see Examples).}
   
-  \item{xspace}{A vector of mode \code{numeric}; the first element controls the space between tiplabels of different clades, the second element sets the spaces between tiplabels within clades.}
+  \item{nchar}{An integer giving the number of characters to which the tiplabels are truncated.}
+  
+  \item{cex}{Numeric \bold{c}haracter \bold{ex}pansion factor for tiplabels; multiplied by \code{\link{par}}(\code{"cex"}) yields the final character size. \code{NULL} is are equivalent to \code{1.0}.}
+  
+  \item{tipspace}{The fraction of the x-axis that is reserved for tiplabel plotting. If no value is given (default), \code{plotAncClim} calculates the fraction as \emph{1 - (4 / nbtips)}, but this can be overridden by specifiying a fixed value for \code{tipspace} in \emph{]0, 1[}.}
+  
+  \item{cladespace}{A positive reel number; \bold{tentative}: a factor controlling the space between tiplabels of different clades.}
+  
+  \item{lwd}{The line width, a positive number, defaulting to 1.}
   
   \item{ylab}{A character string, giving a label for the y-axis, i.e., for the bioclimatic dimension of the plot.}
 }
@@ -47,15 +55,25 @@ and diversification of the 'bird-cage evening primroses' (\emph{Oenothera}, sect
 
 \examples{
 # load phylogeny and PNOs of Oxalis sect. Palmatifoliae
-data(palmatifoliae_tree)
-data(palmatifoliae_pno)
+data(tree)
+data(PNO)
 
 # choose summer precipitation for analysis
-clim <- palmatifoliae_pno$PrecipitationWarmestQuarter
+clim <- PNO$PrecipitationWarmestQuarter
 
 # estimate ancestral tolerances
-ac <- anc.clim(target = palmatifoliae_tree, pno = clim, n = 100)
+ac <- anc.clim(target = tree, pno = clim, n = 100)
 
-# visualize results
-plotAncClim(ac)	
+# visualize results with default branch coloration
+plotAncClim(ac)
+
+# alternative clade colors are given according to the order
+# in which tip labels appear from left to right
+plotAncClim(ac, col = c("red", "purple", "blue"))
+
+# the 'tipmode' argument	
+plotAncClim(ac, tipmode = 0)
+plotAncClim(ac, tipmode = 1)
+plotAncClim(ac, tipmode = 2, nchar = 5)
+plotAncClim(ac, tipmode = 3, nchar = 4)
 }

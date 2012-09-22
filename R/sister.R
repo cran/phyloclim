@@ -1,5 +1,9 @@
 sister <-
 function(phy, node){
+	
+	if (is.character(node))
+		node <- which(phy$tip.label %in% node)
+	
 	if (node == length(phy$tip.label) + 1) D <- 0
 	else {
 		x <- phy$edge[,1][phy$edge[,2] == node] # getmrca

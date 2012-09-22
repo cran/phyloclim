@@ -28,10 +28,6 @@ anc.clim(target, posterior = NULL, pno, n = 100, method = "GLS")
 }
 }
 
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
-
 \value{
 A list containing three elements:
 \item{tree}{An object of class \code{"phylo"}, the \code{target} tree used in the estimation.}
@@ -55,14 +51,14 @@ and diversification of the 'bird-cage evening primroses' (\emph{Oenothera}, sect
 
 \examples{
 # load phylogeny and PNOs of Oxalis sect. Palmatifoliae
-data(palmatifoliae_tree)
-data(palmatifoliae_pno)
+data(tree)
+data(PNO)
 
 # choose summer precipitation for analysis
-clim <- palmatifoliae_pno$PrecipitationWarmestQuarter
+clim <- PNO$PrecipitationWarmestQuarter
 
 # estimate ancestral tolerances
-ac <- anc.clim(target = palmatifoliae_tree, pno = clim, n = 100)
+ac <- anc.clim(target = tree, pno = clim, n = 100)
 
 # visualize results
 plotAncClim(ac, ylab = "Precipitation of warmest quarter (mm)")

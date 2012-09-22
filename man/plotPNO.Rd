@@ -43,13 +43,13 @@ and diversification of the 'bird-cage evening primroses' (\emph{Oenothera}, sect
 }
 \examples{
 # load PNOs for Oxalis sect. Palmatifoliae
-data(palmatifoliae_pno)
+data(PNO)
 
 # plot predicted niche occupany for annual mean temperature
-plotPNO(x = palmatifoliae_pno$AnnualMeanTemperature, 
+plotPNO(x = PNO$AnnualMeanTemperature, 
 	xlab = "Annual Mean Temperature (degree C)")
 	
 # same plot, but with weighted means added
-plotPNO(x = palmatifoliae_pno$AnnualMeanTemperature, 
+plotPNO(x = PNO$AnnualMeanTemperature, 
 	xlab = "Annual Mean Temperature (degree C)", wm = TRUE)
 }

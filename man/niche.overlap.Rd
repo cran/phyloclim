@@ -15,7 +15,8 @@ niche.overlap(x)
 }
 
 \arguments{
-  \item{x}{Might take one of the follwing forms: (1) a data frame containing predicted niche occupancy (PNO) profiles, e.g., as derived by \code{\link{pno}}; (2) a vector of filenames referencing to probability surfaces saved in ASCII-format with an ArcGIS-compatible header; (3) a list containing probability surfaces of class \code{"asc"} (see \code{\link[adehabitat:import.asc]{import.asc}}).}
+  \item{x}{Might take one of the follwing forms: (1) a data frame containing predicted niche occupancy (PNO) profiles, e.g., as derived by \code{\link{pno}}; (2) a vector of filenames referencing to probability surfaces saved in ASCII-format with an ArcGIS-compatible header; (3) a list containing probability surfaces stored as objects of class \code{\link[sp]{SpatialGrid}}.
+  }
 }
 
 \value{
@@ -27,7 +28,7 @@ Evans, M. E. K., S. A. Smith, R. S. Flynn, and M. J. Donoghue. 2009. Climate, ni
 and diversification of the 'bird-cage evening primroses' (\emph{Oenothera}, sections \emph{Anogra} and 
 \emph{Kleinia}). \emph{Am. Nat.} \bold{173}: 225-240.
 
-Schoener, T.W. 1968. Anolis lizards in Bimini: resource partitioning in a complex fauna. \emph{Ecology} \bold{49}: 704-726.
+Schoener, T.W. 1968. \emph{Anolis} lizards in Bimini: resource partitioning in a complex fauna. \emph{Ecology} \bold{49}: 704-726.
 
 Van der Vaart, A.W. 1998. Asymptotic statistics. Cambridge University Press, U.K.
 
@@ -44,13 +45,13 @@ Warren, D. L., R. E. Glor, & M. Turelli. 2008. Environmental niche equivalency v
 
 \examples{
 # load PNOs for Oxalis sect. Palmatifoliae
-data(palmatifoliae_pno)
+data(PNO)
 
 # niche overlap on a annual precipitation gradient:
-no <- niche.overlap(palmatifoliae_pno$AnnualPrecipitation)
+no <- niche.overlap(PNO$AnnualPrecipitation)
 
 # upper triangle: based on Schoeners D
-# lower triangel: based on Hellinger distances
+# lower triangle: based on Hellinger distances
 print(no)	
 }
 

@@ -5,50 +5,50 @@ function(x){
 	# -------------------------
 	if (class(x) == "data.frame"){
 		x <- x[, -1]
-		nspec <- dim(x)[2]
+		nspec <- ncol(x)
 		DI <- matrix(nrow = nspec, ncol = nspec)
-		rownames(DI) <- colnames(DI) <-colnames(x)
+		rownames(DI) <- colnames(DI) <- names(x)
 		for (i in 1:(nspec - 1)){
 			for (j in (i + 1):nspec){
-				dhi <- getDI(x[, i], x[, j])
+				dhi <- di.pno(x = x[, i], y = x[, j])
 				DI[i, j] <- dhi[1]
 				DI[j, i] <- dhi[2]
 			}
 		}
 	}
 
-	# CASE 2: is vector of filenames
-	# ------------------------------
+	## CASE 2: is vector of filenames
+	## ------------------------------
 	if (class(x) == "character"){
 		nspec <- length(x)
 		DI <- matrix(nrow = nspec, ncol = nspec)
-		rownames(DI) <- names(x)
-		colnames(DI) <- names(x)
+		rownames(DI) <- colnames(DI) <- x
 		for (i in 1:(nspec - 1)){
-			X <- import.asc(x[i], type = "numeric")
+			X <- read.asciigrid(x[i])
 			for (j in (i + 1):nspec){
-				Y <- import.asc(x[j], type = "numeric")
-				dhi <- getDI(X, Y)
+				Y <- read.asciigrid(x[j])
+				dhi <- di.enm(x = X, y = Y)
 				DI[i, j] <- dhi[1]
 				DI[j, i] <- dhi[2]
 			}
 		}
 	}
 	
-	# CASE 3: x is a list of 'asc' objects
-	# ------------------------------------
-	if (class(x[[1]]) == "asc"){
+	## CASE 3: x is a list of 'SpatialGrid' objects
+	## --------------------------------------------
+	if (inherits(x[[1]], "SpatialGrid")){
 		nspec <- length(x)
 		DI <- matrix(nrow = nspec, ncol = nspec)
-		rownames(DI) <- names(x)
-		colnames(DI) <- names(x)
+		rownames(DI) <- colnames(DI) <- names(x)
+    system.time(
 		for (i in 1:(nspec - 1)){
 			for (j in (i + 1):nspec){
-				dhi <- getDI(x[[i]], x[[j]])
+				dhi <- di.enm(x = x[[i]], y = x[[j]])
 				DI[i, j] <- dhi[1]
 				DI[j, i] <- dhi[2]
 			}
 		}
+		) # system.time
 	}
 	class(DI) <- "niolap"
 	DI

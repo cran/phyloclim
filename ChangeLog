@@ -1,3 +1,68 @@
+		CHANGES IN PHYLOCLIM VERSION 0.9-0
+
+IMPROVED FEATURES
+    o The code of functions niche.equivalency.test and bg.similarity.test
+      has been completely rewritten to match exactly the definition in 
+      Warren et al. (2011). Previous versions had relied entirely on the 
+      SWD-format (see MAXENT tutorial), which was quicker and easy to im-
+      plement at the cost of altering the definition of the back-
+      ground similarity test.
+    o niche.equivalency.test and bg.similarity.test now produce output
+      objects of class 'ntest'. For class 'ntest' a print and a plot
+      method have been included, the latter replacing the former 
+      non-generic functions plotNicheEquivalency and 
+      plotBackgroundSimilarity.
+
+
+		CHANGES IN PHYLOCLIM VERSION 0.8-5
+      
+BUG FIXES
+
+    o Plotting of tiplabels in function plotAncClim has been completey
+      reworked and is now robust regarding the scale of the phylogenetic 
+      tree. Have a look at ?plotAncClim and note the new arguments tipmode, 
+      tipspace, cladespace, and nchar. The functionality of arguments 
+      show.tips and xspace has been included in tipmode and cladespace, 
+      respectively. Note that cladespace is still in a somewhat 
+      experimental state.
+    
+    		
+		CHANGES IN PHYLOCLIM VERSION 0.8-4
+      
+BUG FIXES
+
+    o Code of function pno was reworked and is now ca. 20 percent faster
+      than in version 0.8.3. This is due to the replacement of the 
+      dependancy on adehabitat for raster map import by pno's own import 
+      device for raster layers.
+    o A check for correct path_model argument is included in function pno.
+
+
+		CHANGES IN PHYLOCLIM VERSION 0.8-3
+      
+Improved documentation of plotAncClim().
+
+
+		CHANGES IN PHYLOCLIM VERSION 0.8-2
+      
+BUG FIXES
+
+    o Some users obtained PNOs containing NA values because the 
+      distibution of NODATA values (e.g., -9999) in their bioclimatic data 
+      and in their ENM models was different. This problem might arise when
+      raster maps differ slightly in their coastlines. The function pno()
+      will now issue a warning in these cases and treat the corresponding 
+      cells as having zero probability in the ENM (e.g., the MAXENT    
+      distribution).	
+    o plotPNO() is now capable of handling PNO matrixes with only one 
+      species.
+
+
+		CHANGES IN PHYLOCLIM VERSION 0.8-1
+      
+Only minor changes in the documentation of PHYLOCLIM.
+
+
 		CHANGES IN PHYLOCLIM VERSION 0.8
       
 BUG FIXES

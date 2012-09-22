@@ -1,0 +1,9 @@
+exportPattern(".+")
+
+import(ape)
+#import(adehabitat)
+#import(rgdal)
+#importFrom(colorspace, sequential_hcl)
+#importFrom(XML, xmlNode, addChildren, saveXML)
+
+#S3method(print, phylo)

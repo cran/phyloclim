@@ -1,94 +1,105 @@
-niche.equivalency.test <- function(spec, n, maxent, mx = 2000){
+niche.equivalency.test <- function(p, env, n = 99, app, dir){
 	
-	# read samples file:
-	z <- read.csv(maxent$samples)
-	z <- z[z[, 1] %in% spec, ]
-	
-	# read background file:
-	bg <- read.csv(maxent$background)
+  # checks and definitions
+  # ----------------------
+  layer.names <- layerNames(env)
+  species <- sort(unique(levels(p[, 1])[p[, 1]]))
+  
+  # append covariate data to presence points
+  # ----------------------------------------
+  attributes <- extract(x = env, y = SpatialPoints(p[, 2:3]))
+  p <- data.frame(p, attributes)
+  NAs <- which(is.na(p), arr.ind = TRUE)
+  NAs <- unique(NAs[, 1])
+  if (length(NAs) > 0){
+    p <- p[-NAs, ]
+    warning(length(NAs), " presence points with missing environmental data removed")
+  }
 		
-	# create permutated samples file:
-	# -------------------------------
-	zzz <- NULL
-	for (i in 1:n){
-		zz <- z
-		zz[, 1] <- zz[sample(dim(z)[1]), 1]
-		zz[, 1] <- paste(zz[, 1], i, sep = "_")
-		zzz <- rbind(zzz, zz)
-	}
-	testnames <- unique(zzz[, 1])
-	
+	# create permutated presence records pp
+	# -------------------------------------
+  permutate <- function(n, presence){
+    presence[, 1] <- presence[sample(nrow(presence)), 1]
+    presence[, 1] <- paste(presence[, 1], n, sep = "_")
+    return(presence)
+  }
+	pp <- lapply(1:n, permutate, presence = p)
+  pp <- do.call(rbind, pp)
+  
+  ## sample background points from env
+  ## ---------------------------------
+  bg <- sampleRandom(env, size = 9999, na.rm = TRUE, sp = TRUE)
+  bg <- data.frame("background", coordinates(bg), slot(bg, "data"))
+  
 	# save input files:
 	# -----------------
-	if (file.exists("R.phyloclim.temp"))
-	    unlink("R.phyloclim.temp", recursive = TRUE)
-	dir.create("R.phyloclim.temp")
-	dir.create("R.phyloclim.temp/out")
-	
-	write.table(bg, "R.phyloclim.temp/background.csv", 
-	    row.names = FALSE, col.names = TRUE, sep = ",")
-	write.table(rbind(z, zzz), "R.phyloclim.temp/samples.csv",
-	    row.names = FALSE, col.names = TRUE, sep = ",")
-	
+  if (missing(dir)) {
+    DIR <- "R.phyloclim.temp"
+  }
+  else {
+    DIR <- dir
+  }
+  if (file.exists(DIR))
+    unlink(DIR, recursive = TRUE)
+  dir.create(DIR)
+  dir.create(ODIR <- paste(DIR, "out/", sep = "/"))
+  dir.create(PDIR <- paste(DIR, "proj/", sep = "/"))
+  
+  write.table(bg, paste(DIR, "background.csv", sep = "/"), 
+              row.names = FALSE, col.names = TRUE, sep = ",")
+  write.table(rbind(p, pp), paste(DIR, "samples.csv", sep = "/"),
+              row.names = FALSE, col.names = TRUE, sep = ",")
+  fn <- paste(PDIR, layer.names, ".asc", sep = "")
+  env <- unstack(env)
+  for (i in seq_along(fn)){
+    writeRaster(x = env[[i]], filename = fn[i], format = "ascii", 
+                overwrite = TRUE, NAflag = -9999)
+  }
+  
 	# call MAXENT:
 	# ------------
-	mx <- paste("-mx", mx, "m", sep = "")
-	call <- paste("java", mx, "-jar", maxent$app , 		"-e R.phyloclim.temp/background.csv",
-		"-s R.phyloclim.temp/samples.csv", 
-		"-j", maxent$projection, 
-		"-o R.phyloclim.temp/out", 			
-		"-r removeduplicates nopictures", 
-	    "outputformat=raw autorun")
-	system(call, wait = TRUE)
+	CALL <- paste("java -jar", app , 		
+    "-e ", paste(DIR, "background.csv", sep = "/"),
+		"-s ", paste(DIR, "samples.csv", sep = "/"),
+		"-j ", PDIR, 
+		"-o ", ODIR, 			
+		"-r removeduplicates nopictures autorun")
+	system(CALL, wait = TRUE)
 	
-	# analyse output
-	# --------------
-	rwd <- getwd()
-	setwd("R.phyloclim.temp/out")
-	
-	projname <- gsub("^.+/", "", maxent$projection)
-	projname <- paste(projname, "asc", sep = ".")
-	
-	# original models:
-	# ----------------
-	fn <- paste(spec[1], projname, sep = "_")
-	x <- import.asc(fn, type = "numeric")
-	fn <- paste(spec[2], projname, sep = "_")
-	y <- import.asc(fn, type = "numeric")
-	
-	di <- getDI(x, y)
-	
-	# null models:
-	# ----------------
-	nd <- NULL
-	for (i in 1:n){
-		fn <- paste(spec[1], i, projname, sep = "_")
-		x <- import.asc(fn, type = "numeric")
-		fn <- paste(spec[2], i, projname, sep = "_")
-		y <- import.asc(fn, type = "numeric")
-		nd <- rbind(nd, getDI(x, y))
-	}
+	# calculate D and I for original paramters and null distribution 
+	# --------------------------------------------------------------
+	fns <- paste(ODIR, species, "_proj.asc", sep = "")
+  x <- read.asciigrid(fns[1])
+  y <- read.asciigrid(fns[2])
+  di <- di.enm(x = x, y = y)
+  
+  di.random <- sapply(X = 1:n, FUN = di.enm, x = fns[1], y = fns[2])
+  di.random <- t(di.random)
 	
 	# assess significance:
 	# --------------------
-	m <- colMeans(nd)
-	s <- apply(nd, 2, sd)
-	
-	p.D <- pnorm(di[1], m[1], s[1])
-	p.I <- pnorm(di[2], m[2], s[2])
-	
-	# change wd and remove MAXENT output:
-	# ----------------------------------
-	setwd(rwd)
-	unlink("R.phyloclim.temp", recursive = TRUE)
+  # The observed values of I(pX,pY) and D(pX,pY) are compared to the percentiles 
+  # of these null distributions in a one-tailed test to evaluate the hypothesis 
+  # that the niche models for X and Y are not statistically significantly different.
+  m <- colMeans(di.random)
+  s <- apply(di.random, 2, sd)
+  p.D <- pnorm(di[1], m[1], s[1], lower.tail = FALSE)
+  p.I <- pnorm(di[2], m[2], s[2], lower.tail = FALSE)
+  
+	# remove MAXENT output:
+	# ---------------------
+  if (DIR == "R.phyloclim.temp") unlink(DIR, recursive = TRUE)
 	
 	# create output object:
 	# ---------------------
-	list(
-		test = "identity",
-		spec = spec,
-		D = c(di[1], p = p.D), 
-		I = c(di[2], p = p.I),
-		null.distribution = nd
-	)	
+	out <- list(
+		method = "niche identity test",
+		species = species,
+		null = "niche models are identical",
+    statistic = di,
+    p.value = c(p.D, p.I),
+		null.distribution = di.random
+	)
+  class(out) <- "ntest"
+  out
 }

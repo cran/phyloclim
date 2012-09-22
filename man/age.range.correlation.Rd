@@ -13,14 +13,14 @@ age.range.correlation(phy, overlap, tri = "upper", n = 1000)
 }
 
 \arguments{
-  \item{phy}{An object of class \code{"phylo"}, which must be ultrametric.
+  \item{phy}{an object of class \code{"phylo"}, which must be ultrametric.
 }
-  \item{overlap}{A matrix of class \code{"niolap"}, containing pairwise measures of niche overlap as produced by \code{\link{niche.overlap}}.
+  \item{overlap}{a matrix of class \code{"niolap"}, containing pairwise measures of niche overlap as produced by \code{\link{niche.overlap}}.
 }
 
-  \item{tri}{Either \code{"upper"} or \code{"lower"}, indicating which triangle of the overlap matrix to use (see \code{\link{niche.overlap}}).
+  \item{tri}{either \code{"upper"} or \code{"lower"}, indicating which triangle of the overlap matrix to use (see \code{\link{niche.overlap}}).
 }
-  \item{n}{An integer giving the number of iterations for the Monte Carlo resampling procedure.
+  \item{n}{an integer giving the number of iterations for the Monte Carlo resampling procedure.
 }
 }
 \details{
@@ -57,17 +57,16 @@ Warren, D., R.E. Glor, & M. Turelli. 2008. Environmental niche equivalency versu
 
 \examples{
 # load PNOs for Oxalis sect. Palmatifoliae ...
-data(palmatifoliae_pno)
+data(PNO)
 
 # ... and calculate niche overlap between species
-no <- niche.overlap(palmatifoliae_pno$AnnualMeanTemperature)
+no <- niche.overlap(PNO$AnnualMeanTemperature)
 
 # load phylogeny and PNOs of Oxalis sect. Palmatifoliae
-data(palmatifoliae_tree)
+data(tree)
 
 # age-range correlation
-x <- age.range.correlation(phy = palmatifoliae_tree, overlap = no, 
-	n = 100)
+x <- age.range.correlation(phy = tree, overlap = no, n = 100)
 
 # plot average niche overlap versus node age
 plot(x$age.range.correlation)

@@ -16,7 +16,10 @@ plotPNO <- function(x, subset = NULL, thinning = NULL, xlab = NULL, tail_thresho
 	
 	# delete 'zero tails'
 	# ---------------------
-	zeros <- which(apply(x[, -1], 1, sum) <= tail_threshold)
+	if (dim(x)[2] > 2)
+	    zeros <- which(apply(x[, -1], 1, sum) <= tail_threshold)
+	else 
+	    zeros <- which(x[, -1] <= tail_threshold)
 	if (length(zeros) > 0)
 			x <- x[-zeros, ]
 			
@@ -25,16 +28,19 @@ plotPNO <- function(x, subset = NULL, thinning = NULL, xlab = NULL, tail_thresho
 	if (!is.null(thinning)) 
 		x <- x[seq(1, dim(x)[1], length.out = thinning), ]
 	
+	
 	col <- rainbow(dim(x)[2] - 1)
 	max_val  <-  max(x[, -1])
-	plot(x[, 1], x[, 2], type = "l", col = col[1], ylim = c(0, 	max_val),
+	plot(x[, 1], x[, 2], type = "l", col = col[1], 
+	    ylim = c(0, 	max_val),
 		main = "Predicted niche occupancy",
 		xlab = xlab,
 		ylab = ""
-	)
+		)
 		
-	for (i in 3:(dim(x)[2]))
-		lines(x[, 1], x[, i], col = col[i - 1])
+	if (dim(x)[2] > 2)
+	    for (i in 3:(dim(x)[2]))
+		    lines(x[, 1], x[, i], col = col[i - 1])
 		
 	# plot legend:
 	# --------------------

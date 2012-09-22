@@ -1,50 +1,67 @@
 \name{hypothesis.testing}
 \Rdversion{1.1}
 \alias{niche.equivalency.test}
+\alias{niche.identity.test}
+\alias{identity.test}
 \alias{bg.similarity.test}
+\alias{print.ntest}
+\alias{plot.ntest}
 
-\title{Niche equivalency and background similarity test}
+\title{Niche Equivalency and Background Similarity Test}
 
 \description{
-Hypothesis testing as proposed by Warren et al. (2008) based on the generation of pseudoreplicate datasets. The niche equivaleny (or identity) test asks whether the ecological niche models (ENMs) of two species are more different than expected if they are drawn from the same underlying distribution. The background similarity test asks whether ENMs drawn from populations with partially or entirely non-overlapping distributions are any more different from one another than expected by random chance. 
+Hypothesis testing as proposed by Warren et al. (2008) based on the generation of pseudoreplicate datasets. The niche equivalency (or identity) test asks whether the ecological niche models (ENMs) of two species are more different than expected if they were drawn from the same underlying distribution. The background similarity test asks whether ENMs drawn from populations with partially or entirely non-overlapping distributions are any more different from one another than expected by random chance. 
 }
 
 \usage{
-niche.equivalency.test(spec, n, maxent, mx = 2000)
+niche.equivalency.test(p, env, n = 99, app, dir)
 
-bg.similarity.test(spec, n, maxent, mx = 2000)
+bg.similarity.test(p, env, n = 99, app, dir)
+
+
+\method{print}{ntest}(x, \dots)
+
+\method{plot}{ntest}(x, \dots)
 }
 
 \arguments{
-  \item{spec}{A vector of mode \code{character} and length = 2 that corresponds to two species names in the sample file (see details).}
+  \item{p}{a \code{\link[sp]{SpatialPointsDataFrame}} or a simple data frame containing the \bold{p}resence points. In the latter case the first column contains the species names, the second and third column longitude and latitude (see SWD-formatted (=Samples-With-Data) files in the MAXENT tutorial).}
   
-  \item{n}{An integer given the number of permutations of the original data.}
+  \item{env}{an object of class \code{\link[sp]{SpatialGridDataFrame}} containing the environmental covariates.}
   
-  \item{maxent}{A list containing the location of the MAXENT application and its input files (see details).}
+  \item{n}{an integer giving the number of permutations of the original data (default: \code{n = 99}).}
   
-  \item{mx}{An integer giving the number of megabytes of memory made available to JAVA.}
-}
+  \item{app}{a character string giving the path to the MAXENT application.}
+  
+  \item{dir}{a character string giving the name of a directory where the input and output data for MAXENT will be saved. Already existing directories will be overwritten \bold{without} a warning. If \code{dir} is left empty the data will be written to a temporary directory, which will be deleted after execution.}
+  
+  \item{x}{an object of class \code{ntest}.}
 
+  \item{\dots}{further arguments passed to or from other methods.}
+}
 \details{
-An installation of MAXENT (Phillips et al., 2006; \url{http://www.cs.princeton.edu/~schapire/maxent/}) is required in order to run \code{niche.equivalency.test} and \code{bg.similarity.test}. The \code{maxent} argument of both functions is a list of four elements:
-
-\describe{
-\item{app}{The path to the MAXENT application.}
-\item{samples}{The path to a SWD-formatted file with sample points.}
-\item{background}{The path to a SWD-formatted file with background points.}
-\item{projections}{The path to a folder containing environmental GIS layers to be used for projection of the MAXENT models.}
-}
-
-For an explanation of SWD-formatted (=Samples-With-Data) files and model projection see the MAXENT tutorial.
+An installation of MAXENT (Phillips et al., 2006; \url{http://www.cs.princeton.edu/~schapire/maxent/}) is required in order to run \code{niche.equivalency.test} and \code{bg.similarity.test}. Both function use the logistic output of MAXENT estimated using auto features. 
 }
 
 \value{
-A list containing five elements:
-\item{test}{Name of the test.}
-\item{spec}{Names of the two species compared.}
-\item{D}{Measure of niche overlap D based on Schoeners D together with p-values.}
-\item{I}{Measure of niche overlap I based on Hellinger distances together with p-values.}
-\item{null.distribution}{Null distributions of D and I derived from randomization.}
+\code{niche.equivalency.test} gives a list with six elements:
+\item{method}{name of the test.}
+\item{species}{names of the two species compared.}
+\item{null}{formulation of the null hypothesis.}
+\item{statistic}{statistics of niche overlap D based on Schoeners D and modified Hellinger distances.}
+\item{p.value}{p-values associated with the statistics.}
+\item{null.distribution}{null distributions of D and I derived from randomization.}
+
+\code{bg.similarity.test} gives a list with eight elements:
+\item{method}{name of the test.}
+\item{species}{names of the two species compared.}
+\item{null}{formulation of the null hypothesis.}
+\item{statistic}{statistics of niche overlap D based on Schoeners D and modified Hellinger distances.}
+\item{ci.x.randomY}{confidence interval for D and I based on the comparison of the first species against a randomized background derived from the second species.}
+    \item{ci.y.randomX}{confidence interval for D and I based on the comparison of the second species against a randomized background derived from the first species.}
+    \item{nd.x.randomY}{null distributions of D and I calculated from the comparison of the first species against a randomized background derived from the second species.}
+\item{nd.y.randomX}{null distributions of D and I calculated from the comparison of the second species against a randomized background derived from the first species.}
+
 }
 
 \references{	
@@ -55,6 +72,39 @@ Warren, D., R.E. Glor, & M. Turelli. 2008. Environmental niche equivalency versu
 
 \author{Christoph Heibl}
 
-\note{These functions have been developed with MAXENT version 3.3.1. and subsequently updated to work with versions 3.3.2 and 3.3.3}
+\note{These functions have been completely rewritten and have been tested with MAXENT 3.3.3k}
 
 \seealso{\code{\link{niche.overlap}}}
+\examples{
+# path to MAXENT
+# --------------
+maxent.exe <- paste(system.file(package="dismo"), 
+"/java/maxent.jar", sep = "")
+
+# a data frame of coordinates where two species 
+# have been detected ('presence points') and
+# a raster stack of environmental covariables
+# --------------------------------------
+species <- c("enneaphylla", "laciniata")
+data(sites)
+samples <- sites[grep(paste(species, collapse = "|"), sites$spec), ]
+data.path <- system.file("extdata", package = "phyloclim")
+preds <- list.files(path = data.path, pattern = "[.]asc")
+preds <- paste(data.path, preds, sep = "/")
+preds <- stack(lapply(X = preds, FUN = raster))
+
+# testing against 9 permutations of the data
+# -------------------------------------------
+reps <- 9
+
+# run hypothesis tests
+# --------------------
+if (file.exists(maxent.exe)){
+  net <- niche.equivalency.test(samples, preds, reps, maxent.exe)
+  net; plot(net)
+  bst <- bg.similarity.test(samples, preds, reps, maxent.exe)
+  bst; plot(bst)
+} else {
+  message("get a copy of MAXENT (see Details)")
+}
+}
