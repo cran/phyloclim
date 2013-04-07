@@ -1,8 +1,9 @@
-bg.similarity.test <- function(p, env, n = 99, app, dir){
-	
+bg.similarity.test <- function(p, env, n = 99, conf.level = .95, app, dir){
+  
   # checks and definitions
   # ----------------------
-  layer.names <- layerNames(env)
+  names(p) <- c("species", "long", "lat")
+  layer.names <- names(env)
   species <- sort(unique(levels(p[, 1])[p[, 1]]))
 	
   ## sample background points from env
@@ -30,7 +31,7 @@ bg.similarity.test <- function(p, env, n = 99, app, dir){
     s <- rbind(sampleRandom(x, size = nbo[1], na.rm = TRUE, sp = TRUE),
                sampleRandom(x, size = nbo[2], na.rm = TRUE, sp = TRUE))
     s <- data.frame(name, coordinates(s), slot(s, "data"))
-    colnames(s)[1:3] <- c("spec", "long", "lat")
+    colnames(s)[1:3] <- c("species", "long", "lat")
     return(s)
   }
   rp <- lapply(1:n, FUN = random.presence, x = env, nbo = nb.occ, name = spec.vect)
@@ -63,13 +64,14 @@ bg.similarity.test <- function(p, env, n = 99, app, dir){
 	
   # call MAXENT:
   # ------------
+  togglelayertype <- ifelse(length(grep("cat_", layer.names)) > 0, "-t cat_", "")
   CALL <- paste("java -jar", app ,   	
                 "-e ", paste(DIR, "background.csv", sep = "/"),
                 "-s ", paste(DIR, "samples.csv", sep = "/"),
                 "-j ", PDIR, 
-                "-o ", ODIR, 			
-                "-r removeduplicates nopictures", 
-                "outputformat=raw autorun")
+                "-o ", ODIR, 	
+                togglelayertype,
+                "-r removeduplicates nopictures autorun")
   system(CALL, wait = TRUE)
 	
   # calculate D and I for actual models
@@ -86,25 +88,19 @@ bg.similarity.test <- function(p, env, n = 99, app, dir){
   di.y.randomX <- sapply(X = 1:n, FUN = di.enm, x = fns[1], y = y)
   di.y.randomX <- t(di.y.randomX)
   
-  # 95% CIs for null distributions
+  # CIs for null distributions
   # ------------------------------
-	m.x.randomY <- apply(di.x.randomY, 2, mean)
-	sd.x.randomY <- apply(di.x.randomY, 2, sd)
-	m.y.randomX <- apply(di.y.randomX, 2, mean)
-	sd.y.randomX <- apply(di.y.randomX, 2, sd)
-  ci.x.randomY <- rbind(lower.bound = 1.96 * ( sd.x.randomY / sqrt(n) ) - m.x.randomY, 
-                        upper.bound = 1.96 * ( sd.x.randomY / sqrt(n) ) + m.x.randomY)                    
-  ci.y.randomX <- rbind(lower.bound = 1.96 * ( sd.y.randomX / sqrt(n) ) - m.y.randomX, 
-                        upper.bound = 1.96 * ( sd.y.randomX / sqrt(n) ) + m.y.randomX)
+  conf.limits <- c((1 - conf.level) / 2, 1- (1 - conf.level) / 2)
+  ci.x.randomY <- apply(di.x.randomY, 2, quantile, probs = conf.limits)
+  ci.y.randomX <- apply(di.y.randomX, 2, quantile, probs = conf.limits)
   
-  h0.x.randomY <- ci.x.randomY[1, ] < di & di < ci.x.randomY[2, ]
-  h0.y.randomX <- ci.y.randomX[1, ] < di & di < ci.y.randomX[2, ]
+#   h0.x.randomY <- ci.x.randomY[1, ] < di & di < ci.x.randomY[2, ]
+#   h0.y.randomX <- ci.y.randomX[1, ] < di & di < ci.y.randomX[2, ]
   
-  # null hypothesis that measured niche overlap between species is 
-  # explained by regional similarities or differences in 
-  # available habitat, is rejected if the actual similarity
-  # between two species falls outside of the 95% confidence limits 
-  # of the null distribution.
+  # The null hypothesis that measured niche overlap between species is explained
+  # by regional similarities or differences in available habitat (and not by
+  # niche conservatism), is rejected if the actual similarity between two
+  # species falls outside of the 95% confidence limits of the null distribution.
 
   # remove MAXENT output:
   # ---------------------
@@ -115,9 +111,9 @@ bg.similarity.test <- function(p, env, n = 99, app, dir){
   out <- list(
     method = "background similarity test",
     species = species,
-    null = paste("niche models are less or equally similar\n", 
-                 paste(rep("\t", 24), collapse = ""), 
-                 "than expected by chance", sep = ""),
+    null = paste("niche models are either more similar \n", 
+                 paste(rep(" ", 24), collapse = ""), 
+                 "or more different than expected by chance", sep = ""),
     statistic = di,
     ci.x.randomY = ci.x.randomY,
     ci.y.randomX = ci.y.randomX,

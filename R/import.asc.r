@@ -1,4 +1,4 @@
-"import.asc" <- function (file, type = c("numeric", "factor"), lev = NULL,
+import.asc <- function (file, type = c("numeric", "factor"), lev = NULL,
                           levnb = 1, labnb = 3)
 {
     ## Verifications

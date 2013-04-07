@@ -9,7 +9,7 @@
 }
 
 \usage{
-age.range.correlation(phy, overlap, tri = "upper", n = 1000)
+age.range.correlation(phy, overlap, tri = "upper", n = 10000)
 }
 
 \arguments{

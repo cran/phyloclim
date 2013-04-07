@@ -58,16 +58,18 @@ niche.equivalency.test <- function(p, env, n = 99, app, dir){
   
 	# call MAXENT:
 	# ------------
+  togglelayertype <- ifelse(length(grep("cat_", layer.names)) > 0, "-t cat_", "")
 	CALL <- paste("java -jar", app , 		
     "-e ", paste(DIR, "background.csv", sep = "/"),
 		"-s ", paste(DIR, "samples.csv", sep = "/"),
 		"-j ", PDIR, 
-		"-o ", ODIR, 			
+		"-o ", ODIR,
+    togglelayertype,
 		"-r removeduplicates nopictures autorun")
 	system(CALL, wait = TRUE)
 	
-	# calculate D and I for original paramters and null distribution 
-	# --------------------------------------------------------------
+	# calculate D and I for original parameters and null distribution 
+	# ---------------------------------------------------------------
 	fns <- paste(ODIR, species, "_proj.asc", sep = "")
   x <- read.asciigrid(fns[1])
   y <- read.asciigrid(fns[2])
@@ -83,8 +85,8 @@ niche.equivalency.test <- function(p, env, n = 99, app, dir){
   # that the niche models for X and Y are not statistically significantly different.
   m <- colMeans(di.random)
   s <- apply(di.random, 2, sd)
-  p.D <- pnorm(di[1], m[1], s[1], lower.tail = FALSE)
-  p.I <- pnorm(di[2], m[2], s[2], lower.tail = FALSE)
+  p.D <- pnorm(di[1], m[1], s[1], lower.tail = TRUE)
+  p.I <- pnorm(di[2], m[2], s[2], lower.tail = TRUE)
   
 	# remove MAXENT output:
 	# ---------------------
@@ -95,7 +97,7 @@ niche.equivalency.test <- function(p, env, n = 99, app, dir){
 	out <- list(
 		method = "niche identity test",
 		species = species,
-		null = "niche models are identical",
+		null = "niche models are not identical/equivalent",
     statistic = di,
     p.value = c(p.D, p.I),
 		null.distribution = di.random

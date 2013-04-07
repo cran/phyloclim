@@ -16,7 +16,7 @@ Hypothesis testing as proposed by Warren et al. (2008) based on the generation o
 \usage{
 niche.equivalency.test(p, env, n = 99, app, dir)
 
-bg.similarity.test(p, env, n = 99, app, dir)
+bg.similarity.test(p, env, n = 99, conf.level = .95, app, dir)
 
 
 \method{print}{ntest}(x, \dots)
@@ -31,6 +31,8 @@ bg.similarity.test(p, env, n = 99, app, dir)
   
   \item{n}{an integer giving the number of permutations of the original data (default: \code{n = 99}).}
   
+  \item{conf.level}{a real number between 0 and 1 setting the confidence level of the confidence intervals to be calculated.}
+  
   \item{app}{a character string giving the path to the MAXENT application.}
   
   \item{dir}{a character string giving the name of a directory where the input and output data for MAXENT will be saved. Already existing directories will be overwritten \bold{without} a warning. If \code{dir} is left empty the data will be written to a temporary directory, which will be deleted after execution.}
@@ -40,7 +42,9 @@ bg.similarity.test(p, env, n = 99, app, dir)
   \item{\dots}{further arguments passed to or from other methods.}
 }
 \details{
-An installation of MAXENT (Phillips et al., 2006; \url{http://www.cs.princeton.edu/~schapire/maxent/}) is required in order to run \code{niche.equivalency.test} and \code{bg.similarity.test}. Both function use the logistic output of MAXENT estimated using auto features. 
+An installation of MAXENT (Phillips et al., 2006; \url{http://www.cs.princeton.edu/~schapire/maxent/}) is required in order to run \code{niche.equivalency.test} and \code{bg.similarity.test}. Both functions use the logistic output of MAXENT estimated using auto features. 
+
+By default, the environmental covariates given with \code{env} are assumend to be \emph{continuous}. In order to use \emph{categorical} environmental covariates, you have to prepend \code{"cat_"} to the layer name, e.g. \code{"cat_landuse"}.
 }
 
 \value{
@@ -102,7 +106,7 @@ reps <- 9
 if (file.exists(maxent.exe)){
   net <- niche.equivalency.test(samples, preds, reps, maxent.exe)
   net; plot(net)
-  bst <- bg.similarity.test(samples, preds, reps, maxent.exe)
+  bst <- bg.similarity.test(samples, preds, reps, app = maxent.exe)
   bst; plot(bst)
 } else {
   message("get a copy of MAXENT (see Details)")

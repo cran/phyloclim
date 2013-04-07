@@ -1,5 +1,5 @@
-pno <-  
-function(path_bioclim, path_model, subset = NULL, bin_width = 1, 	bin_number = NULL){
+pno <- function(path_bioclim, path_model, subset = NULL, 
+                bin_width = 1, 	bin_number = NULL){
 	
 	# read and reorganize BIOCLIM layer: slow
 	# ---------------------------------------

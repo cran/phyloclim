@@ -1,11 +1,13 @@
-age.range.correlation <- 
-function(phy, overlap, tri = "upper", n = 1000){
+age.range.correlation <- function(phy, overlap, tri = "upper", 
+                                  n = 10000){
 	
 	# check input
 	# -----------
-	if (!inherits(phy, "phylo")) 
-        stop("object \"phy\" is not of class \"phylo\"")
-			
+	if ( !inherits(phy, "phylo") ) 
+	  stop("object 'phy' is not of class 'phylo'")
+	if ( !is.ultrametric(phy) )
+    stop("object 'phy' must be ultrametric")
+    		
 	# ages:
 	# -----
 	age <- branching.times(phy)	
@@ -13,9 +15,9 @@ function(phy, overlap, tri = "upper", n = 1000){
 	# make matrix symmetrical
 	# -----------------------
 	ovlap <- overlap
-	if (tri == "upper")
+	if ( tri == "upper" )
 		ovlap[lower.tri(ovlap)] <- t(ovlap)[lower.tri(ovlap)]
-	if (tri == "lower")
+	if ( tri == "lower" )
 		ovlap[upper.tri(ovlap)] <- t(ovlap)[upper.tri(ovlap)]
 	
 	# match matrix to tree
@@ -25,7 +27,8 @@ function(phy, overlap, tri = "upper", n = 1000){
 	
 	# calculate 'nested mean overlap'
 	# -------------------------------
-	overlap <- sapply(names(age), nested.mean.overlap, phy = phy, 		olap = ovlap)
+	overlap <- sapply(names(age), nested.mean.overlap, phy = phy, 		
+                    olap = ovlap)
 
 	x <- cbind(age, overlap)	
 	x.lm <- lm(overlap ~ age)
@@ -35,27 +38,35 @@ function(phy, overlap, tri = "upper", n = 1000){
 	randomization <- function(phy, o, n, age){
 		id <- sample(seq(along = o[, 1]))
 		rownames(o) <- colnames(o) <- colnames(o)[id]
-		o <- sapply(names(age), nested.mean.overlap, phy = phy, 			olap = o)
+		o <- sapply(names(age), nested.mean.overlap, phy = phy, 
+                olap = o)
 		o <- cbind(age, o)
 		o <- lm(o[, 2] ~ age)
 		o$coefficients
 	}
-	reps <- 1:n
-	random.x <- sapply(reps, randomization, o = ovlap, phy = phy, 		age = age)
+	random.x <- lapply(1:n, randomization, o = ovlap, 
+                     phy = phy, age = age)
+	random.x <- do.call(rbind, random.x) # do conversion explicitly!
 	
-	f.intercept <- 										length(which(random.x[1,] > x.lm$coefficients[1]))/n
-	f.slope <- 											length(which(random.x[2,] > x.lm$coefficients[2]))/n
+  ## fraction of intercepts and slopes from the randomization,
+  ## which are greater than the observed values
+  ## ------------------------------------------
+	f.intercept <- random.x[, "(Intercept)" ] > x.lm$coefficients["(Intercept)"]
+  f.intercept <- length(which((f.intercept))) / n
+  
+  f.slope <- random.x[, "age" ] > x.lm$coefficients["age"]
+	f.slope <- length(which(f.slope)) / n
 	
+  ## 2-sided p-values
+  ## ----------------
 	f <- c(f.intercept, f.slope)
 	p <- sapply(f, function(x) 2 * min(x, 1 - x))
 	sig <- cbind(f, p)
-	rownames(sig) <- c("intercept", "slope")
+	rownames(sig) <- c("(intercept)", "age")
 	
 	list(age.range.correlation = x, 
 		linear.regression = x.lm, 
 		sig = sig,
-		MonteCarlo.replicates = t(random.x) 
-			
+		MonteCarlo.replicates = random.x	
 	)
-	
 }
