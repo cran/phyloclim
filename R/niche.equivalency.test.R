@@ -2,7 +2,7 @@ niche.equivalency.test <- function(p, env, n = 99, app, dir){
 	
   # checks and definitions
   # ----------------------
-  layer.names <- layerNames(env)
+  layer.names <- names(env)
   species <- sort(unique(levels(p[, 1])[p[, 1]]))
   
   # append covariate data to presence points

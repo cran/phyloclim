@@ -1,5 +1,5 @@
-9b7c9c577df4071c3ee88681c014e30b *ChangeLog
-225cada8c020b04e5d6748cdf6419287 *DESCRIPTION
+2511e7cc6a29fdfe691cf169925b67eb *ChangeLog
+70db5bf73e737adbf14d0597dcf6d0c5 *DESCRIPTION
 196b95bc1dc5af13ab1385ca76a73526 *NAMESPACE
 873747abd826759595140c94108ae300 *R/AC.node.trans.R
 da2920120ec8bd263bba223726f22239 *R/age.range.correlation.R
@@ -11,7 +11,7 @@ c4648ba5fe376ddbc10ace972615f19c *R/di.pno.R
 080ed7b164fd5be15849ca90fa91d0df *R/import.asc.r
 1df06dcf534eb00fd4e52d99f7b4026b *R/nbConnectingNodes.R
 a16e74488b3781daa27b10b725f15a35 *R/nested.mean.overlap.R
-58d095f5bbca48206920654c40f82291 *R/niche.equivalency.test.R
+eb13b6ee233574a4cd431bf9d0f60116 *R/niche.equivalency.test.R
 5bcb821e4839d6f518baee65eab660e9 *R/niche.overlap.R
 4464be78760f1b3476c36a6f8a5c65a0 *R/noi.R
 81f8e28ed44c497db0b2d5afcceff7df *R/plot.ntest.R
@@ -23,11 +23,11 @@ c9f93006a4b6727ab290ea66661d0ff4 *R/pno.weighted.mean.R
 4a77921e788324dad9e70675948e56d2 *R/sister.R
 0a6689e23f672c1c8b4f82ee89ca81c5 *R/terminal.sisters.R
 db00c56faf328d6b71be45fab6504606 *R/thinPNO.R
-70941bc231e9ea4d585baa0c1a7b58de *data/PNO.rda
-db5cc564fa188a2a8fd078daa454ae0e *data/equ.rda
-b9f5213dce0ee4fab5b26ce0afc9d032 *data/sim.rda
-b1fcc3fa9ab16d2170a7cff16f166ee8 *data/sites.rda
-8e17c268b2d139aa3898cc86b6b718af *data/tree.rda
+9b925452c6d3448f2702509b358f1aaf *data/PNO.rda
+e66518c4e8cde20b62842be500dfff80 *data/equ.rda
+6e09fc5b93491157121a88ded2589a01 *data/sim.rda
+04af4dd4d15a9d3201ff6c195911afa7 *data/sites.rda
+5c60994e111bd41b74dd1899876d87a3 *data/tree.rda
 4ff505dc276ff8887b9043134ee3b1f0 *debug/datasetNET+BST.sh
 6c9d73f1e64cbd1503554f3ccbe2eb65 *debug/debug.niche.overlap.R
 0085e89d002191a1fa2986a0500c5c3d *debug/debug_age.range.corr.R
@@ -52,7 +52,7 @@ afc89065e22e6ef8058109faec8ba44f *man/age.range.correlation.Rd
 b8d17d7b00d8fd2d14b496d22b3b9400 *man/niche.overlap.Rd
 c96a1198a50152dadea1285e5d0bc759 *man/palmatifoliae.Rd
 377ed3645261d2520fce892f4fb07eb3 *man/phyloclim-internal.Rd
-26978b1ce80cce401e956b8eb474d197 *man/phyloclim-package.Rd
+12f5750c69a897047113051fd5ec9852 *man/phyloclim-package.Rd
 a01134d45900ed9f663f2e538016fd2c *man/plotAncClim.Rd
 5431e10d3d58481491eacbb0d90e687f *man/plotPNO.Rd
 6c7342ae62a014e6cc17810bc7406b02 *man/pno.Rd
