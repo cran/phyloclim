@@ -1,3 +1,8 @@
+## This code is part of the phyloclim package
+## © C. Heibl 2009 (last update 2018-05-24)
+
+#' @importFrom ape getMRCA
+
 nbConnectingNodes <- function(phy, npair){
 	ntips <- length(phy$tip.label)
 	nds <- getMRCA(phy, npair)

@@ -1,4 +1,12 @@
-anc.clim <- function(target, posterior = NULL, pno, n = 100, method = "GLS"){
+## This code is part of the phyloclim package
+## © C. Heibl 2009 (last update 2018-05-24)
+
+#' @importFrom ape ace corBrownian
+#' @importFrom stats quantile
+#' @export
+
+anc.clim <- function(target, posterior = NULL, pno, n = 100, 
+                     method = "GLS"){
 	
 	if (is.null(posterior))
 		posterior <- list(target, target)

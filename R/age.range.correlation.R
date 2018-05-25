@@ -1,11 +1,15 @@
+#' @importFrom ape branching.times is.ultrametric
+#' @importFrom stats lm
+#' @export
+
 age.range.correlation <- function(phy, overlap, tri = "upper", 
                                   n = 10000){
 	
 	# check input
 	# -----------
-	if ( !inherits(phy, "phylo") ) 
+	if (!inherits(phy, "phylo")) 
 	  stop("object 'phy' is not of class 'phylo'")
-	if ( !is.ultrametric(phy) )
+	if (!is.ultrametric(phy))
     stop("object 'phy' must be ultrametric")
     		
 	# ages:
@@ -15,9 +19,9 @@ age.range.correlation <- function(phy, overlap, tri = "upper",
 	# make matrix symmetrical
 	# -----------------------
 	ovlap <- overlap
-	if ( tri == "upper" )
+	if (tri == "upper")
 		ovlap[lower.tri(ovlap)] <- t(ovlap)[lower.tri(ovlap)]
-	if ( tri == "lower" )
+	if (tri == "lower")
 		ovlap[upper.tri(ovlap)] <- t(ovlap)[upper.tri(ovlap)]
 	
 	# match matrix to tree

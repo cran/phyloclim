@@ -1,10 +1,3 @@
-      CHANGES IN PHYLOCLIM VERSION 0.9-4
-
-BUG FIXES
-    o layerNames() replaced by names() following the redefinition
-      in the dependent raster package.
-	
-
       CHANGES IN PHYLOCLIM VERSION 0.9-3
 
 BUG FIXES

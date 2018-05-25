@@ -1,3 +1,9 @@
+## This code is part of the phyloclim package
+## © C. Heibl 2009 (last update 2018-05-24)
+
+#' @importFrom utils read.table
+#' @export
+
 pno <- function(path_bioclim, path_model, subset = NULL, 
                 bin_width = 1, 	bin_number = NULL){
 	

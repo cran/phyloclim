@@ -1,3 +1,13 @@
+## This code is part of the phyloclim package
+## © C. Heibl 2009 (last update 2018-05-24)
+
+#' @importFrom methods slot
+#' @importFrom raster extract unstack sampleRandom writeRaster
+#' @importFrom sp coordinates read.asciigrid SpatialPoints
+#' @importFrom utils write.table
+#' @export
+
+
 bg.similarity.test <- function(p, env, n = 99, conf.level = .95, app, dir){
   
   # checks and definitions

@@ -1,3 +1,12 @@
+## This code is part of the phyloclim package
+## © C. Heibl 2009 (last update 2018-05-24)
+
+#' @importFrom raster extract sampleRandom
+#' @importFrom sp read.asciigrid
+#' @importFrom stats pnorm sd
+#' @importFrom utils write.table
+#' @export
+
 niche.equivalency.test <- function(p, env, n = 99, app, dir){
 	
   # checks and definitions

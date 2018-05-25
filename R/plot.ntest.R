@@ -1,3 +1,9 @@
+## This code is part of the phyloclim package
+## © C. Heibl 2009 (last update 2018-05-24)
+
+#' @importFrom graphics hist par title
+#' @export
+
 plot.ntest <- function(x, ...) {
   
   ## definitions

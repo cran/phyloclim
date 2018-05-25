@@ -1,3 +1,9 @@
+## This code is part of the phyloclim package
+## © C. Heibl 2009 (last update 2018-05-24)
+
+#' @importFrom sp read.asciigrid
+#' @export
+
 niche.overlap <- function(x){
 	
 	# CASE 1: x is a pno matrix
@@ -16,7 +22,7 @@ niche.overlap <- function(x){
 		}
 	}
 
-	## CASE 2: is vector of filenames
+	## CASE 2: x is vector of filenames
 	## ------------------------------
 	if ( class(x) == "character" ){
 		nspec <- length(x)

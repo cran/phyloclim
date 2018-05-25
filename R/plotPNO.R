@@ -1,4 +1,12 @@
-plotPNO <- function(x, subset = NULL, thinning = NULL, xlab = NULL, tail_threshold = 0, wm = FALSE, legend.pos = "topleft"){
+## This code is part of the phyloclim package
+## © C. Heibl 2009 (last update 2018-05-24)
+
+#' @importFrom grDevices rainbow
+#' @importFrom graphics legend lines plot
+#' @export
+
+plotPNO <- function(x, subset = NULL, thinning = NULL, xlab = NULL, 
+                    tail_threshold = 0, wm = FALSE, legend.pos = "topleft"){
 	
 	# calculate weighted means:
 	# -------------------------

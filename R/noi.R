@@ -1,3 +1,8 @@
+## This code is part of the phyloclim package
+## © C. Heibl 2009 (last update 2018-05-24)
+
+#' @importFrom ape mrca
+
 noi <- function(tr, group, regex = NULL, monophyletic = FALSE){
 	
 	# test to filter out trees with
